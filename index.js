@@ -11,7 +11,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.set("Access-Control-Allow-Origin", "'https://demo.bitxmen.net")
 
-app.listen(3000)
+app.listen(3000 || process.env.PORT)
 var mail = "toan_nguyen@gmail.com"
 var id = 2
 var seed = `bitxmen${mail}`
