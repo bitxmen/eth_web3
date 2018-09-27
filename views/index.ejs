@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>hook</title>
+</head>
+<body>
+    <pre id="content"><%-JSON.stringify(content, undefined, 2)%></pre>
+</body>
+</html>
+
+<script>
+    $(document).ready(function(){
+        var content = $("#content")
+
+        var socket = io("http://localhost:3000/")
+
+        socket.on("NEW_BLOCK", function(data){
+            console.log(data)
+            content.html(JSON.stringify(data, undefined, 2))
+        })
+    })
+</script>
