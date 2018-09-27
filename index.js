@@ -35,6 +35,7 @@ var subAddress12 = "0xdd6D27e773C9ff3d07FE66ce5817D6Fa46660A03".toLowerCase()
 
 var listAddress = [subAddress1, subAddress12]
 var lastestBlock = 111
+var lastestTransFound = "0x0000000000000"
 var confirmCount = 0;
 
 // bắt sự kiện có một block mới
@@ -45,15 +46,23 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
 }).on("data", function (blockHeader) {
     // console.log("block moi nhat: ", blockHeader.number);
     lastestBlock = blockHeader.number
-    io.sockets.emit("NEW_BLOCK", {content: {list: listAddress, lastestBlock: lastestBlock}});
+    io.sockets.emit("NEW_BLOCK", {
+        list: listAddress, 
+        lastestBlock: lastestBlock,
+        lastestTransFound: lastestTransFound
+    });
     web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount)
         .then(count => {
             for (let i = 0; i < count; i++) {
                 web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i)
                     .then(trans => {
                         if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
-
-                            // console.log("block thay: ", blockHeader.number - confirmCount, "\nTxHas: ", trans.hash, "\nvalue: ", trans.value)
+                            lastestTransFound = trans.hash
+                            io.sockets.emit("NEW_BLOCK", {
+                                list: listAddress, 
+                                lastestBlock: lastestBlock,
+                                lastestTransFound: trans.hash
+                            });
                             axios({
                                 url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
                                 method: 'POST',
@@ -80,7 +89,7 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
 });
 
 app.get("/", (req, res) => {
-    res.render("index", {content: {list: listAddress, lastestBlock: lastestBlock}})
+    res.render("index", {content: {list: listAddress, lastestBlock: lastestBlock, lastestTransFound: lastestTransFound}})
 })
 
 // var seedroot = "xinchaocacbannha"
