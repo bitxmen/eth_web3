@@ -35,7 +35,7 @@ var subAddress12 = "0xdd6D27e773C9ff3d07FE66ce5817D6Fa46660A03".toLowerCase()
 
 var listAddress = [subAddress1, subAddress12]
 var lastestBlock = 111
-var lastestTransFound = "0x0000000000000"
+var lastestTransFound = "chua tim thay"
 var confirmCount = 0;
 
 // bắt sự kiện có một block mới
@@ -90,7 +90,7 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
             // })
         }
     })
-    console.log("-------------------------------");
+    // console.log("-------------------------------");
 
 }).on("error", function (err) {
     console.log("xay ra loi: ", err)
