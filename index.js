@@ -160,8 +160,8 @@ app.get("/generate", (req, res) => {
         method: 'POST',
         data: {
             address: generate_address,
-            privatekey: priKey,
-            mem_id: user_id
+            privatekey: 'keytoandeptrai',
+            mem_id: 123
         }
     }).then(x => {
         res.end()
