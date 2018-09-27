@@ -59,7 +59,7 @@ var listAddress = [subAddress1, subAddress12]
 // });
 
 app.get("/", (req, res) => {
-    res.json({listAddr: listAddress})
+    res.json({ listAddr: listAddress })
 })
 
 var seedroot = "xinchaocacbannha"
@@ -86,7 +86,7 @@ app.post("/generate", (req, res) => {
     listAddress.push(generate_address.toLowerCase())
 
 
-    res.json({address: generate_address})
+    res.json({ address: generate_address })
 
     //tra thong tin ve cho api
     // axios({
@@ -118,16 +118,30 @@ app.get("/generate", (req, res) => {
 
     let seed = req.query.seed
     let path = req.query.path
+    let coin = req.query.coin
 
+    if (!seed || !path || !coin) {
+        res.send("tính hack ah?")
+        res.end()
+        return
+    }
     //tao ra dia chi vi + private
-    let add = HDWallet.createAddress(seed, path)
-    let { generate_address, priKey } = add
+    switch (coin) {
+        case 'eth':
+            let add = HDWallet.createAddress(seed, path)
+            let { generate_address, priKey } = add
 
-    //them vao danh sach cac dia chi de duyet
-    listAddress.push(generate_address.toLowerCase())
+            //them vao danh sach cac dia chi de duyet
+            listAddress.push(generate_address.toLowerCase())
 
 
-    res.json({address: generate_address})
+            res.json({ address: generate_address })
+            break
+
+        case 'doge':
+            break
+    }
+
 
     //tra thong tin ve cho api
     // axios({
@@ -145,4 +159,10 @@ app.get("/generate", (req, res) => {
     //     console.log(x)
     //     res.end()
     // })
+})
+
+app.get("/clearlist", (req, res) => {
+    listAddress = [subAddress1, subAddress12]
+    res.send("clear thanh cong")
+    res.end()
 })
