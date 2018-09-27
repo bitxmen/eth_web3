@@ -9,7 +9,7 @@ var HDWallet = require("./method/doing")
 const Web3 = require("web3")
 const web3 = new Web3("wss://ropsten.infura.io/ws");
 
-var confirmCount = 3;
+var confirmCount = 0;
 
 app.use('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -25,41 +25,51 @@ var subAddress1 = "0xdF68f43EF66cd0ab093069DC2334EEb50F7219B9".toLowerCase()
 var subAddress12 = "0xdd6D27e773C9ff3d07FE66ce5817D6Fa46660A03".toLowerCase()
 
 var listAddress = [subAddress1, subAddress12]
+var lastestBlock = 111
 
 // bắt sự kiện có một block mới
-// var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result) {
-//     if (error) {
-//         console.log(error);
-//     }
-// }).on("data", function (blockHeader) {
-//     console.log("block moi nhat: ", blockHeader.number);
-//     web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount)
-//         .then(count => {
-//             for (let i = 0; i < count; i++) {
-//                 web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i)
-//                     .then(trans => {
-//                         if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
+var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result) {
+    if (error) {
+        console.log(error);
+    }
+}).on("data", function (blockHeader) {
+    // console.log("block moi nhat: ", blockHeader.number);
+    lastestBlock = blockHeader.number
+    web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount)
+        .then(count => {
+            for (let i = 0; i < count; i++) {
+                web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i)
+                    .then(trans => {
+                        if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
 
-//                             console.log("block thay: ", blockHeader.number - confirmCount, "\nTxHas: ", trans.hash, "\nvalue: ", trans.value)
-//                                 axios({
-//                                     url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
-//                                     method: 'POST',
-//                                     data: {
-//                                         address: trans.to,
-//                                         value: web3.utils.fromWei(trans.value, "ether")
-//                                     }
-//                                 })
+                            // console.log("block thay: ", blockHeader.number - confirmCount, "\nTxHas: ", trans.hash, "\nvalue: ", trans.value)
+                            // axios({
+                            //     url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
+                            //     method: 'POST',
+                            //     data: {
+                            //         address: trans.to,
+                            //         value: web3.utils.fromWei(trans.value, "ether"),
+                            //         hash: trans.hash,
+                            //         coin: 'ETH'
+                            //     }
+                            // })
 
-//                         }
-//                     })
-//             }
-//         })
-// }).on("error", function (err) {
-//     console.log("xay ra loi: ", err)
-// });
+                        }
+                    })
+
+                // .then(trans => {
+                //     if(trans.to){
+                //         console.log(trans.to)
+                //     }
+                // })
+            }
+        })
+}).on("error", function (err) {
+    console.log("xay ra loi: ", err)
+});
 
 app.get("/", (req, res) => {
-    res.json({ listAddr: listAddress })
+    res.json({ listAddr: listAddress, lastestBlock: lastestBlock })
 })
 
 var seedroot = "xinchaocacbannha"
