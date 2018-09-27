@@ -47,49 +47,57 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
     // console.log("block moi nhat: ", blockHeader.number);
     lastestBlock = blockHeader.number
     io.sockets.emit("NEW_BLOCK", {
-        list: listAddress, 
+        list: listAddress,
         lastestBlock: lastestBlock,
         lastestTransFound: lastestTransFound
     });
-    web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount)
-        .then(count => {
-            for (let i = 0; i < count; i++) {
-                web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i)
-                    .then(trans => {
-                        if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
-                            lastestTransFound = trans.hash
-                            io.sockets.emit("NEW_BLOCK", {
-                                list: listAddress, 
-                                lastestBlock: lastestBlock,
-                                lastestTransFound: trans.hash
-                            });
-                            axios({
-                                url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
-                                method: 'POST',
-                                data: {
-                                    address: trans.to,
-                                    value: web3.utils.fromWei(trans.value, "ether"),
-                                    hash: trans.hash,
-                                    coin: 'ETH'
-                                }
-                            })
+    web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount).then(count => {
+        for (let i = 0; i < count; i++) {
+            web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i).then(trans => {
 
+                // if(trans.to != null){
+                //     console.log(blockHeader.number, " --- ", trans.to.toLowerCase());
+                    
+                // }
+
+                if (trans.to != null && listAddress.indexOf(trans.to.toLowerCase()) > -1) {
+                    lastestTransFound = trans.hash
+
+                    axios({
+                        url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
+                        method: 'POST',
+                        data: {
+                            address: trans.to,
+                            value: web3.utils.fromWei(trans.value, "ether"),
+                            hash: trans.hash,
+                            coin: 'ETH'
                         }
+                    }).then(() => {
+                        io.sockets.emit("NEW_BLOCK", {
+                            list: listAddress,
+                            lastestBlock: lastestBlock,
+                            lastestTransFound: trans.hash
+                        });
                     })
 
-                // .then(trans => {
-                //     if(trans.to){
-                //         console.log(trans.to)
-                //     }
-                // })
-            }
-        })
+                }
+            })
+
+            // .then(trans => {
+            //     if(trans.to){
+            //         console.log(trans.to)
+            //     }
+            // })
+        }
+    })
+    console.log("-------------------------------");
+
 }).on("error", function (err) {
     console.log("xay ra loi: ", err)
 });
 
 app.get("/", (req, res) => {
-    res.render("index", {content: {list: listAddress, lastestBlock: lastestBlock, lastestTransFound: lastestTransFound}})
+    res.render("index", { content: { list: listAddress, lastestBlock: lastestBlock, lastestTransFound: lastestTransFound } })
 })
 
 // var seedroot = "xinchaocacbannha"

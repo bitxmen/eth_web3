@@ -17,8 +17,8 @@
     $(document).ready(function(){
         var content = $("#content")
 
-        // var socket = io("http://localhost:3000/")
-        var socket = io("http://letplay.herokuapp.com/")
+        var socket = io("http://localhost:3000/")
+        // var socket = io("http://letplay.herokuapp.com/")
 
         socket.on("NEW_BLOCK", function(data){
             console.log(data)
