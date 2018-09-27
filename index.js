@@ -154,21 +154,21 @@ app.get("/generate", (req, res) => {
 
 
     //tra thong tin ve cho api
-    axios({
-        // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-        url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-        method: 'POST',
-        data: {
-            address: generate_address,
-            privatekey: 'keytoandeptrai',
-            mem_id: 123
-        }
-    }).then(x => {
-        res.end()
-    }).catch(x => {
-        console.log(x)
-        res.end()
-    })
+    // axios({
+    //     // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+    //     url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+    //     method: 'POST',
+    //     data: {
+    //         address: generate_address,
+    //         privatekey: 'keytoandeptrai',
+    //         mem_id: 123
+    //     }
+    // }).then(x => {
+    //     res.end()
+    // }).catch(x => {
+    //     console.log(x)
+    //     res.end()
+    // })
 })
 
 app.get("/clearlist", (req, res) => {
