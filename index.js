@@ -43,16 +43,16 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
                         if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
 
                             // console.log("block thay: ", blockHeader.number - confirmCount, "\nTxHas: ", trans.hash, "\nvalue: ", trans.value)
-                            // axios({
-                            //     url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
-                            //     method: 'POST',
-                            //     data: {
-                            //         address: trans.to,
-                            //         value: web3.utils.fromWei(trans.value, "ether"),
-                            //         hash: trans.hash,
-                            //         coin: 'ETH'
-                            //     }
-                            // })
+                            axios({
+                                url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
+                                method: 'POST',
+                                data: {
+                                    address: trans.to,
+                                    value: web3.utils.fromWei(trans.value, "ether"),
+                                    hash: trans.hash,
+                                    coin: 'ETH'
+                                }
+                            })
 
                         }
                     })
@@ -154,21 +154,21 @@ app.get("/generate", (req, res) => {
 
 
     //tra thong tin ve cho api
-    // axios({
-    //     // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-    //     url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-    //     method: 'POST',
-    //     data: {
-    //         address: generate_address,
-    //         privatekey: priKey,
-    //         mem_id: user_id
-    //     }
-    // }).then(x => {
-    //     res.end()
-    // }).catch(x => {
-    //     console.log(x)
-    //     res.end()
-    // })
+    axios({
+        // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+        url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+        method: 'POST',
+        data: {
+            address: generate_address,
+            privatekey: priKey,
+            mem_id: user_id
+        }
+    }).then(x => {
+        res.end()
+    }).catch(x => {
+        console.log(x)
+        res.end()
+    })
 })
 
 app.get("/clearlist", (req, res) => {
