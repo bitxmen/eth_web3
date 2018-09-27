@@ -4,60 +4,104 @@ const app = express()
 const bodyParser = require("body-parser")
 const axios = require("axios")
 
-const HDWallet = require("ethereumjs-wallet")
-const HDKey = require("hdkey")
+var HDWallet = require("./method/doing")
 
+const Web3 = require("web3")
+const web3 = new Web3("wss://ropsten.infura.io/ws");
+
+var confirmCount = 3;
+
+app.use('*', function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    next()
+})
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 
-app.listen(process.env.PORT)
-var mail = "toan_nguyen@gmail.com"
-var id = 2
-var seed = `bitxmen${mail}`
-var path = `m/44/60/0/${id}`
-var hdkey = HDKey.fromMasterSeed(Buffer.from(seed))
-var childkey = hdkey.derive(path)
+app.listen(process.env.PORT || 3000)
 
-var extPriKey = childkey.privateExtendedKey
-var extPubKey = childkey.publicExtendedKey
+var mainAddress = "0xb4200db8874aB862C79887Bc2E1376eABF7C03A4".toLowerCase()
+var subAddress1 = "0xdF68f43EF66cd0ab093069DC2334EEb50F7219B9".toLowerCase()
+var subAddress12 = "0xdd6D27e773C9ff3d07FE66ce5817D6Fa46660A03".toLowerCase()
 
-// console.log("seed => hdkey (derive) => childkey => childkey privateExtended key => address + private key")
-// console.log("seed = bitxmen + mail of member,", "derive path = m/44/60/0/ + id of member")
+var listAddress = [subAddress1, subAddress12]
 
+// bắt sự kiện có một block mới
+// var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result) {
+//     if (error) {
+//         console.log(error);
+//     }
+// }).on("data", function (blockHeader) {
+//     console.log("block moi nhat: ", blockHeader.number);
+//     web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount)
+//         .then(count => {
+//             for (let i = 0; i < count; i++) {
+//                 web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i)
+//                     .then(trans => {
+//                         if (trans.to && listAddress.includes(trans.to.toLowerCase())) {
 
-// console.log("ext private key    :", extPriKey)
-// console.log("ext public key     :", extPubKey)
+//                             console.log("block thay: ", blockHeader.number - confirmCount, "\nTxHas: ", trans.hash, "\nvalue: ", trans.value)
+//                                 axios({
+//                                     url: "https://demo.bitxmen.net/api/addr/test_deposit_eth.php",
+//                                     method: 'POST',
+//                                     data: {
+//                                         address: trans.to,
+//                                         value: web3.utils.fromWei(trans.value, "ether")
+//                                     }
+//                                 })
 
-
-var hdwallet = HDWallet.fromExtendedPrivateKey(extPriKey)
-var address = hdwallet.getAddress() // địa chỉ ví
-var priKey = hdwallet.getPrivateKey() //mật khẩu
-var pubKey = hdwallet.getPublicKey()
-
-console.log("address            :", '0x' + address.toString("hex"))
-console.log("wall-private key   :", priKey.toString("hex"))
+//                         }
+//                     })
+//             }
+//         })
+// }).on("error", function (err) {
+//     console.log("xay ra loi: ", err)
+// });
 
 app.get("/", (req, res) => {
-    res.end("ok ne")
+    res.json({listAddr: listAddress})
 })
 
-app.post("/address", (req, res) => {
-    let mail = req.body.mail
-    let user_id = req.body.user_id
+var seedroot = "xinchaocacbannha"
+var pathroot = "m/44/60/0/"
 
-    console.log(mail, user_id)
-    axios({
-        url: "https://demo.bitxmen.net/api/test_wallet.php",
-        method: 'POST',
-        data: {
-            address: '0x1234asda65sd456as4df',
-            privatekey: 'djkgfdf6545343fgh3'
-        }
-    }).then(x => {
-        res.send("thanh cong")
-        res.end()
-    }).catch(x => {
-        console.log(x)
-        res.end()
-    })
+app.post("/generate", (req, res) => {
+    //let mail = req.body.mail
+    //let user_id = req.body.user_id
+    //let coin = req.body.coin
+
+
+
+    //let seed = `${seedroot}${mail}${coin}`
+    //let path = `${pathroot}${user_id}`
+
+    let seed = req.body.seed
+    let path = req.body.path
+
+    //tao ra dia chi vi + private
+    let add = HDWallet.createAddress(seed, path)
+    let { generate_address, priKey } = add
+
+    //them vao danh sach cac dia chi de duyet
+    listAddress.push(generate_address.toLowerCase())
+
+
+    res.json({address: generate_address})
+
+    //tra thong tin ve cho api
+    // axios({
+    //     // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+    //     url: "https://demo.bitxmen.net/api/addr/test_generate.php",
+    //     method: 'POST',
+    //     data: {
+    //         address: generate_address,
+    //         privatekey: priKey,
+    //         mem_id: user_id
+    //     }
+    // }).then(x => {
+    //     res.end()
+    // }).catch(x => {
+    //     console.log(x)
+    //     res.end()
+    // })
 })
