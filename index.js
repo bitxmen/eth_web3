@@ -103,53 +103,11 @@ app.get("/", (req, res) => {
 // var seedroot = "xinchaocacbannha"
 // var pathroot = "m/44/60/0/"
 
-// app.post("/generate", (req, res) => {
-//     //let mail = req.body.mail
-//     //let user_id = req.body.user_id
-//     //let coin = req.body.coin
-
-
-
-//     //let seed = `${seedroot}${mail}${coin}`
-//     //let path = `${pathroot}${user_id}`
-
-//     let seed = req.body.seed
-//     let path = req.body.path
-
-//     //tao ra dia chi vi + private
-//     let add = HDWallet.createAddress(seed, path)
-//     let { generate_address, priKey } = add
-
-//     //them vao danh sach cac dia chi de duyet
-//     listAddress.push(generate_address.toLowerCase())
-
-
-//     res.json({ address: generate_address })
-
-//     //tra thong tin ve cho api
-//     // axios({
-//     //     // url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-//     //     url: "https://demo.bitxmen.net/api/addr/test_generate.php",
-//     //     method: 'POST',
-//     //     data: {
-//     //         address: generate_address,
-//     //         privatekey: priKey,
-//     //         mem_id: user_id
-//     //     }
-//     // }).then(x => {
-//     //     res.end()
-//     // }).catch(x => {
-//     //     console.log(x)
-//     //     res.end()
-//     // })
-// })
 
 app.get("/generate", (req, res) => {
     //let mail = req.body.mail
     //let user_id = req.body.user_id
     //let coin = req.body.coin
-
-
 
     //let seed = `${seedroot}${mail}${coin}`
     //let path = `${pathroot}${user_id}`
