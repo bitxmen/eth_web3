@@ -52,7 +52,7 @@ var subscription = web3.eth.subscribe('newBlockHeaders', function (error, result
         lastestTransFound: lastestTransFound
     });
     web3.eth.getBlockTransactionCount(blockHeader.number - confirmCount).then(count => {
-        for (let i = 0; i < count; i++) {
+        for (var i = 0; i < count; i++) {
             web3.eth.getTransactionFromBlock(blockHeader.number - confirmCount, i).then(trans => {
 
                 // if(trans.to != null){
@@ -105,16 +105,16 @@ app.get("/", (req, res) => {
 
 
 app.get("/generate", (req, res) => {
-    //let mail = req.body.mail
-    //let user_id = req.body.user_id
-    //let coin = req.body.coin
+    //var mail = req.body.mail
+    //var user_id = req.body.user_id
+    //var coin = req.body.coin
 
-    //let seed = `${seedroot}${mail}${coin}`
-    //let path = `${pathroot}${user_id}`
+    //var seed = `${seedroot}${mail}${coin}`
+    //var path = `${pathroot}${user_id}`
 
-    let seed = req.query.seed
-    let path = req.query.path
-    let coin = req.query.coin
+    var seed = req.query.seed
+    var path = req.query.path
+    var coin = req.query.coin
 
     if (!seed || !path || !coin) {
         res.send("tính hack ah?")
@@ -124,8 +124,8 @@ app.get("/generate", (req, res) => {
     //tao ra dia chi vi + private
     switch (coin) {
         case 'eth':
-            let add = HDWallet.createAddress(seed, path)
-            let { generate_address, priKey } = add
+            var add = HDWallet.createAddress(seed, path)
+            var { generate_address, priKey } = add
 
             //them vao danh sach cac dia chi de duyet
             listAddress.push(generate_address.toLowerCase())
