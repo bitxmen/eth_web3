@@ -125,7 +125,8 @@ app.get("/generate", (req, res) => {
     switch (coin) {
         case 'eth':
             var add = HDWallet.createAddress(seed, path)
-            var { generate_address, priKey } = add
+            // var { generate_address, priKey } = add
+            var generate_address = add.generate_address
 
             //them vao danh sach cac dia chi de duyet
             listAddress.push(generate_address.toLowerCase())
